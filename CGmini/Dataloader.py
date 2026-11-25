@@ -44,7 +44,7 @@ def load_data(args, device):
     labels = labels - min(set(labels))
 
     class_idx, class_num = count_idx(labels)
-    idx_labeled, idx_unlabeled, idx_val = divide(class_idx, class_num, args.ratio1, args.ratio2)
+    idx_labeled, idx_unlabeled, idx_val = divide(class_idx, class_num, args.ratio)
     labels = torch.from_numpy(labels).long()
 
     adjs = data['adj'][0]
@@ -96,16 +96,15 @@ def count_idx(labels):
     return dic_idx, dic_count
 
 
-def divide(dic1, dic2, ratio1, ratio2):
+def divide(dic1, dic2, ratio):
     keys = list(dic1.keys())
     idx_train = []
     idx_test = []
     idx_val = []
-    idx_remain = []
     for i in keys:
         random.shuffle(dic1[i])
-        num1 = int(dic2[i] * ratio1)
-        num2 = int(dic2[i] * ratio2)
+        num1 = int(dic2[i] * ratio)
+        num2 = int(dic2[i] * 0.1)
         idx_train.extend(dic1[i][0:num1])
         idx_val.extend(dic1[i][num1:num1 + num2])
         idx_test.extend(dic1[i][num1 + num2:])
